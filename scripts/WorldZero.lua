@@ -46,7 +46,7 @@ local Settings = game:GetService('HttpService'):JSONDecode(readfile(FileName))
 function Save() writefile(FileName, game:GetService('HttpService'):JSONEncode(Settings)) end
 
 --- // UI Library // ---
-local Lib = loadstring(game:HttpGet('https://raw.githubusercontent.com/hoangsalty/scripts/main/Materials/UISource/Vision_Lib.lua'))()
+local Lib = loadstring(game:HttpGet('https://raw.githubusercontent.com/hoangsalty/roblox/main/scripts/Materials/UISource/Vision_Lib.lua'))()
 Window = Lib:Create({
 	Name = "World//Zero",
 	Footer = "By Jank",

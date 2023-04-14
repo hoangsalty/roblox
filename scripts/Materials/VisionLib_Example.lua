@@ -1,4 +1,4 @@
-local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/hoangsalty/scripts/main/Materials/UISource/Vision_Lib.lua'))()
+local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/hoangsalty/roblox/main/scripts/Materials/UISource/Vision_Lib.lua'))()
 
 Window = Library:Create({
 	Name = "Vision UI Lib v2",
