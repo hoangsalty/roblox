@@ -2934,8 +2934,6 @@ function Library:Create(options)
 						if type(value) == 'table' then
 							item_name = value[1]
 							item_value = value[2]
-
-							print(item_name, item_value)
 						else
 							item_name = value
 							item_value = value
@@ -3033,6 +3031,10 @@ function Library:Create(options)
 											Length = 0.2,
 											Goal = { Color = Color3.fromRGB(43, 43, 43) },
 										})
+									end
+
+									for i,v in next, DropdownOption do
+										print(i,v)
 									end
 
 									Dropdown.SelectedItem = DropdownOption.CallbackVal
