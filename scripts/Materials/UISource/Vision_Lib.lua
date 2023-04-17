@@ -2965,7 +2965,7 @@ function Library:Create(options)
 							DropdownOption["4f"]["TextSize"] = 13
 							DropdownOption["4f"]["TextColor3"] = Color3.fromRGB(255, 255, 255)
 							DropdownOption["4f"]["Size"] = UDim2.new(0, 301, 0, 33)
-							DropdownOption["4f"]["Text"] = tostring(DropdownOption.CallbackName)
+							DropdownOption["4f"]["Text"] = tostring(item_name)
 							DropdownOption["4f"]["Name"] = [[Label]]
 							DropdownOption["4f"]["Font"] = Enum.Font.GothamMedium
 							DropdownOption["4f"]["BackgroundTransparency"] = 1
@@ -3034,7 +3034,7 @@ function Library:Create(options)
 									end
 
 									Dropdown.SelectedItem = DropdownOption.CallbackVal
-									Dropdown["5b"].Text = tostring(DropdownOption.CallbackName)
+									Dropdown["5b"].Text = tostring(Dropdown.CallbackName)
 
 									local Bound = TextService:GetTextSize(
 										Dropdown["5b"].Text,
@@ -3045,7 +3045,7 @@ function Library:Create(options)
 
 									Library:Tween(Dropdown["5b"], {
 										Length = 0.2,
-										Goal = { Size = UDim2.new(0, (Bound.X + 14), 0, 21) },
+										Goal = { Size = UDim2.new(0, (Bound.X + 270), 0, 21) },
 									})
 								end
 							end)
