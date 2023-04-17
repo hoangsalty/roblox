@@ -3033,10 +3033,6 @@ function Library:Create(options)
 										})
 									end
 
-									for i,v in next, DropdownOption do
-										print(i,v)
-									end
-
 									Dropdown.SelectedItem = DropdownOption.CallbackVal
 									Dropdown["5b"].Text = tostring(DropdownOption.CallbackName)
 
