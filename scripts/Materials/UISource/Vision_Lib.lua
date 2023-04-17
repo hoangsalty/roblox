@@ -2934,6 +2934,8 @@ function Library:Create(options)
 						if type(value) == 'table' then
 							item_name = value[1]
 							item_value = value[2]
+
+							print(item_name, item_value)
 						else
 							item_name = value
 							item_value = value
