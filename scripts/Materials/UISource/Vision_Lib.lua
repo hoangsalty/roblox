@@ -3045,7 +3045,7 @@ function Library:Create(options)
 
 									Library:Tween(Dropdown["5b"], {
 										Length = 0.2,
-										Goal = { Size = UDim2.new(0, (Bound.X + 14), 0, 21) },
+										Goal = { Size = UDim2.new(0, (Bound.X + 270), 0, 21) },
 									})
 								end
 							end)

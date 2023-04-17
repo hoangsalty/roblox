@@ -45,7 +45,7 @@ function Save() writefile(FileName, game:GetService('HttpService'):JSONEncode(Se
 
 --- // UI Library // ---
 local Lib = loadstring(game:HttpGet('https://raw.githubusercontent.com/hoangsalty/roblox/main/scripts/Materials/UISource/Vision_Lib.lua'))()
-local Window = Lib:Create({
+Window = Lib:Create({
 	Name = "World//Zero",
 	Footer = "By Jank",
 	ToggleKey = Enum.KeyCode.RightControl,
@@ -1203,7 +1203,7 @@ local AF_Section3 = AutoFarm:Section({Name = "Action"}) do
                         elseif Quests_Left('world') <= 0 or not Settings['FarmWorldQuest'] then
                             if Settings['FarmGuildDungeon'] then
                                 if not InDungeon then
-                                    AFDebug:SetName('Move to: '..(Mission_Name(1))..' ('..(Diff_Name(1,1))..')')
+                                    AFDebug:SetName('Move to: '..(Mission_Name(1))..' ('..(Diff_Default(1))..')')
                                     game.ReplicatedStorage.Shared.Teleport.StartRaid:FireServer(1, 1)
                                     task.wait(100)
                                 else
@@ -1213,8 +1213,8 @@ local AF_Section3 = AutoFarm:Section({Name = "Action"}) do
                                         game.ReplicatedStorage.Shared.Teleport.StartRaid:FireServer(nextDungeon[1])
                                         task.wait(100)
                                     else
-                                        AFDebug:SetName('Move to: '..(Mission_Name(nextDungeon[1]))..' ('..(Diff_Name(nextDungeon[1], nextDungeon[2]))..')')
-                                        game.ReplicatedStorage.Shared.Teleport.StartRaid:FireServer(nextDungeon[1], nextDungeon[2])
+                                        AFDebug:SetName('Move to: '..(Mission_Name(nextDungeon[1]))..' ('..(Diff_Default(nextDungeon[2]))..')')
+                                        game.ReplicatedStorage.Shared.Teleport.StartRaid:FireServer(nextDungeon[2])
                                         task.wait(100)
                                     end
                                 end
@@ -1224,7 +1224,7 @@ local AF_Section3 = AutoFarm:Section({Name = "Action"}) do
                                     game.ReplicatedStorage.Shared.Teleport.StartRaid:FireServer(Settings['DungeonID'])
                                     task.wait(100)
                                 else
-                                    AFDebug:SetName('Move to: '..(Mission_Name(Settings['DungeonID']))..' ('..(Diff_Name(Settings['DungeonID'], Settings['DifficultyID']))..')')
+                                    AFDebug:SetName('Move to: '..(Mission_Name(Settings['DungeonID']))..' ('..(Diff_Default(Settings['DifficultyID']))..')')
                                     game.ReplicatedStorage.Shared.Teleport.StartRaid:FireServer(Settings['DungeonID'], Settings['DifficultyID'])
                                     task.wait(100)
                                 end
