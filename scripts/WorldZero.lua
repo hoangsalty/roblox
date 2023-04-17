@@ -1,6 +1,6 @@
-repeat task.wait(1) until game:IsLoaded()
-repeat task.wait(1) until game.CoreGui
-repeat task.wait(1) until game:GetService('Players').LocalPlayer
+repeat task.wait() until game:IsLoaded()
+repeat task.wait() until game.CoreGui
+repeat task.wait() until game:GetService('Players').LocalPlayer
 
 
 game.CoreGui.RobloxPromptGui.promptOverlay.DescendantAdded:Connect(function()
@@ -52,7 +52,7 @@ local Window = Lib:Create({
 	ToggledRelativeYOffset = 0,
     LoadedCallback = function()
 		Window:TaskBarOnly(true)
-	end,
+	end
 })
 
 if game.PlaceId == 2727067538 then
@@ -424,6 +424,11 @@ end
 
 --- // Auto Farm // ---
 local AutoFarm = Window:Tab({Name = "AutoFarm", Icon = "rbxassetid://11396131982", Color = Color3.new(1, 0, 0)})
+local AF_SectionDebug = AutoFarm:Section({Name = "Debug"})
+local AFDebug = AF_SectionDebug:Label({
+	Name = "",
+})
+
 local AF_Section1 = AutoFarm:Section({Name = "Selection"}) do
     function Get_Missions()
         local ListMissions = {}
@@ -787,9 +792,8 @@ local AF_Section3 = AutoFarm:Section({Name = "Action"}) do
                     }
 
                     if object then
-                        -- Status_Debug.Set('Attacking: Object')
+                        AFDebug:SetName('Attacking: Object')
                         TweenTP(object.PrimaryPart, 0)
-                        --Client_Root.CFrame = object.PrimaryPart.CFrame
                     else
                         if mob then
                             repeat task.wait()
@@ -800,15 +804,16 @@ local AF_Section3 = AutoFarm:Section({Name = "Action"}) do
                                 end
                                 
                                 mob = Get_Target('mob')
-                                --[[ local mob_name = require(game.ReplicatedStorage.Shared.Mobs.Mobs[mob.Name])['NameTag']
-                                Status_Debug.Set('Attacking: '..tostring(mob_name)) ]]
+
+                                local mob_name = require(game.ReplicatedStorage.Shared.Mobs.Mobs[mob.Name])['NameTag']
+                                AFDebug:SetName('Attacking: '..tostring(mob_name))
 
                                 if Client_Class == 'Summoner' and Character.Properties.SummonCount.Value >= 4 then
                                     game.ReplicatedStorage.Shared.Combat.Skillsets.Summoner.Summon:FireServer()
                                 end
                                 
                                 if require(game.ReplicatedStorage.Shared.Health):GetHealth(Character) < (require(game.ReplicatedStorage.Shared.Health):GetMaxHealth(Character)/2.5) then
-                                    -- Status_Debug.Set('Healing...')
+                                    AFDebug:SetName('Healing...')
                                     TweenTP(mob.Collider, 100)
                                     repeat task.wait() until require(game.ReplicatedStorage.Shared.Health):GetHealth(Character) == require(game.ReplicatedStorage.Shared.Health):GetMaxHealth(Character)
                                 end
@@ -850,7 +855,7 @@ local AF_Section3 = AutoFarm:Section({Name = "Action"}) do
                                             TweenTP(Sub_Object(), 5)
                                         else
                                             local boss_name = require(game.ReplicatedStorage.Shared.Mobs.Mobs[boss.Name])['NameTag']
-                                            -- Status_Debug.Set('Attacking: '..tostring(boss_name))
+                                            AFDebug:SetName('Attacking: '..tostring(boss_name))
             
                                             if boss.Name == 'BOSSAnubis' then -- Dungeon 4-3
                                                 if (Client_Root.Position - boss.Collider.Position).magnitude > 100 then
@@ -880,7 +885,7 @@ local AF_Section3 = AutoFarm:Section({Name = "Action"}) do
                                                 end
                                                 
                                                 if require(game.ReplicatedStorage.Shared.Health):GetHealth(Character) < (require(game.ReplicatedStorage.Shared.Health):GetMaxHealth(Character)/2.5) then
-                                                    -- Status_Debug.Set('Healing...')
+                                                    AFDebug:SetName('Healing...')
                                                     TweenTP(boss.Collider, 100)
                                                     repeat task.wait() until require(game.ReplicatedStorage.Shared.Health):GetHealth(Character) == require(game.ReplicatedStorage.Shared.Health):GetMaxHealth(Character)
                                                 end
@@ -1118,26 +1123,26 @@ local AF_Section3 = AutoFarm:Section({Name = "Action"}) do
                         if not TowerTargets[TargetTable[1]] then
                             if InDungeon then
                                 if require(game.ReplicatedStorage.Shared.Teleport):WorldIsAvailableToPlayer(WorldIDs[LinkedWorld], Client) then
-                                    -- Status_Debug.Set('Move to: World '..tostring(LinkedWorld)..' | Quest: '..tostring(Mode.Name))
+                                    AFDebug:SetName('Move to: World '..tostring(LinkedWorld)..' | Quest: '..tostring(Mode.Name))
                                     game.ReplicatedStorage.Shared.Teleport.TeleportToHub:FireServer(WorldIDs[LinkedWorld])
                                     task.wait(100)
                                 else
-                                    -- Status_Debug.Set('Farm level: '..(List_Farm()[#List_Farm()].NameTag))
+                                    AFDebug:SetName('Farm level: '..(List_Farm()[#List_Farm()].NameTag))
                                     game.ReplicatedStorage.Shared.Teleport.StartRaid:FireServer(List_Farm()[#List_Farm()].ID)
                                     task.wait(100)
                                 end
                             elseif not InDungeon and DoQuest then
-                                -- Status_Debug.Set('Do quest: '..tostring(Mode.Name))
+                                AFDebug:SetName('Do quest: '..tostring(Mode.Name))
                                 Farm_OpenWorld(TargetTable)
                             end
                         else
                             local towerId = TowerTargets[TargetTable[1]]
                             if Client_Level >= require(game.ReplicatedStorage.Shared.Missions):GetMissionData()[towerId].LevelRequirement then
-                                -- Status_Debug.Set('Move to tower has: '..tostring(TargetTable[1]))
+                                AFDebug:SetName('Move to tower has: '..tostring(TargetTable[1]))
                                 game.ReplicatedStorage.Shared.Teleport.StartRaid:FireServer(towerId)
                                 task.wait(100)
                             else
-                                -- Status_Debug.Set('Farming level: '..(List_Farm()[#List_Farm()].NameTag))
+                                AFDebug:SetName('Farming level: '..(List_Farm()[#List_Farm()].NameTag))
                                 game.ReplicatedStorage.Shared.Teleport.StartRaid:FireServer(List_Farm()[#List_Farm()].ID)
                                 task.wait(100)
                             end
@@ -1145,7 +1150,7 @@ local AF_Section3 = AutoFarm:Section({Name = "Action"}) do
                     elseif QuestType == 'DoDungeon' then
                         local LevelRequirement = require(game.ReplicatedStorage.Shared.Missions):GetMissionData()[Mode.Objective[3][1]].LevelRequirement
                         if Client_Level >= LevelRequirement then
-                            -- Status_Debug.Set('Do quest: '..tostring(Mode.Name))
+                            AFDebug:SetName('Do quest: '..tostring(Mode.Name))
                             if not Can_Access_Dungeon(TargetTable[1]) then
                                 Find_Dungeon(TargetTable[1])
                             else
@@ -1153,15 +1158,15 @@ local AF_Section3 = AutoFarm:Section({Name = "Action"}) do
                                 task.wait(100)
                             end
                         else
-                            -- Status_Debug.Set('Farm level: '..(List_Farm()[#List_Farm()].NameTag))
+                            AFDebug:SetName('Farm level: '..(List_Farm()[#List_Farm()].NameTag))
                             game.ReplicatedStorage.Shared.Teleport.StartRaid:FireServer(List_Farm()[#List_Farm()].ID)
                             task.wait(100)
                         end
                     elseif QuestType == 'CompleteWorldEvent' then
-                        -- Status_Debug.Set('Do quest: '..tostring(Mode.Name))
+                        AFDebug:SetName('Do quest: '..tostring(Mode.Name))
                         Farm_OpenWorld(nil)
                     elseif QuestType == 'DoDungeonInWorld' then
-                        -- Status_Debug.Set('Do quest: '..tostring(Mode.Name))
+                        AFDebug:SetName('Do quest: '..tostring(Mode.Name))
                         if Mode.Name:find('World 1') then
                             game.ReplicatedStorage.Shared.Teleport.StartRaid:FireServer(1)
                         elseif Mode.Name:find('World 2') then
@@ -1173,7 +1178,7 @@ local AF_Section3 = AutoFarm:Section({Name = "Action"}) do
                         end
                         task.wait(100)
                     elseif QuestType == 'LevelUp' then
-                        -- Status_Debug.Set('Do quest: '..tostring(Mode.Name))
+                        AFDebug:SetName('Do quest: '..tostring(Mode.Name))
                         game.ReplicatedStorage.Shared.Teleport.StartRaid:FireServer(List_Farm()[#List_Farm()].ID)
                         task.wait(100)
                     elseif QuestType == 'DoRandomDungeon' then
@@ -1198,28 +1203,28 @@ local AF_Section3 = AutoFarm:Section({Name = "Action"}) do
                         elseif Quests_Left('world') <= 0 or not Settings['FarmWorldQuest'] then
                             if Settings['FarmGuildDungeon'] then
                                 if not InDungeon then
-                                    -- Status_Debug.Set('Move to: '..(Mission_Name(1))..' ('..(Diff_Name(1,1))..')')
+                                    AFDebug:SetName('Move to: '..(Mission_Name(1))..' ('..(Diff_Name(1,1))..')')
                                     game.ReplicatedStorage.Shared.Teleport.StartRaid:FireServer(1, 1)
                                     task.wait(100)
                                 else
                                     local nextDungeon = NextDungeon()
                                     if table.find(Towers, (nextDungeon[1])) then
-                                        -- Status_Debug.Set('Move to: '..(Mission_Name(nextDungeon[1])))
+                                        AFDebug:SetName('Move to: '..(Mission_Name(nextDungeon[1])))
                                         game.ReplicatedStorage.Shared.Teleport.StartRaid:FireServer(nextDungeon[1])
                                         task.wait(100)
                                     else
-                                        -- Status_Debug.Set('Move to: '..(Mission_Name(nextDungeon[1]))..' ('..(Diff_Name(nextDungeon[1], nextDungeon[2]))..')')
+                                        AFDebug:SetName('Move to: '..(Mission_Name(nextDungeon[1]))..' ('..(Diff_Name(nextDungeon[1], nextDungeon[2]))..')')
                                         game.ReplicatedStorage.Shared.Teleport.StartRaid:FireServer(nextDungeon[1], nextDungeon[2])
                                         task.wait(100)
                                     end
                                 end
                             else
                                 if table.find(Towers, (Settings['DungeonID'])) then
-                                    -- Status_Debug.Set('Move to: '..(Mission_Name(Settings['DungeonID'])))
+                                    AFDebug:SetName('Move to: '..(Mission_Name(Settings['DungeonID'])))
                                     game.ReplicatedStorage.Shared.Teleport.StartRaid:FireServer(Settings['DungeonID'])
                                     task.wait(100)
                                 else
-                                    -- Status_Debug.Set('Move to: '..(Mission_Name(Settings['DungeonID']))..' ('..(Diff_Name(Settings['DungeonID'], Settings['DifficultyID']))..')')
+                                    AFDebug:SetName('Move to: '..(Mission_Name(Settings['DungeonID']))..' ('..(Diff_Name(Settings['DungeonID'], Settings['DifficultyID']))..')')
                                     game.ReplicatedStorage.Shared.Teleport.StartRaid:FireServer(Settings['DungeonID'], Settings['DifficultyID'])
                                     task.wait(100)
                                 end

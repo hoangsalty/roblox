@@ -3034,7 +3034,7 @@ function Library:Create(options)
 									end
 
 									Dropdown.SelectedItem = DropdownOption.CallbackVal
-									Dropdown["5b"].Text = tostring(Dropdown.CallbackName)
+									Dropdown["5b"].Text = tostring(DropdownOption.CallbackName)
 
 									local Bound = TextService:GetTextSize(
 										Dropdown["5b"].Text,
@@ -3053,7 +3053,7 @@ function Library:Create(options)
 
 						if Dropdown.SelectedItem == nil then
 							Dropdown.SelectedItem = DropdownOption.CallbackVal
-							Dropdown["5b"].Text = tostring(Dropdown.CallbackName)
+							Dropdown["5b"].Text = tostring(DropdownOption.CallbackName)
 
 							local Bound = TextService:GetTextSize(
 								Dropdown["5b"].Text,
