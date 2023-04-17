@@ -2965,7 +2965,7 @@ function Library:Create(options)
 							DropdownOption["4f"]["TextSize"] = 13
 							DropdownOption["4f"]["TextColor3"] = Color3.fromRGB(255, 255, 255)
 							DropdownOption["4f"]["Size"] = UDim2.new(0, 301, 0, 33)
-							DropdownOption["4f"]["Text"] = tostring(item_name)
+							DropdownOption["4f"]["Text"] = tostring(DropdownOption.CallbackName)
 							DropdownOption["4f"]["Name"] = [[Label]]
 							DropdownOption["4f"]["Font"] = Enum.Font.GothamMedium
 							DropdownOption["4f"]["BackgroundTransparency"] = 1
