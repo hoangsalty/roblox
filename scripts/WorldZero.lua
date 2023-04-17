@@ -1,8 +1,6 @@
-if not game:IsLoaded() then
-    repeat game['Loaded']:Wait() until game:IsLoaded()
-end
-repeat task.wait() until game.CoreGui
-repeat task.wait() until game:GetService('Players').LocalPlayer
+repeat task.wait(1) until game:IsLoaded()
+repeat task.wait(1) until game.CoreGui
+repeat task.wait(1) until game:GetService('Players').LocalPlayer
 
 
 game.CoreGui.RobloxPromptGui.promptOverlay.DescendantAdded:Connect(function()
@@ -47,18 +45,14 @@ function Save() writefile(FileName, game:GetService('HttpService'):JSONEncode(Se
 
 --- // UI Library // ---
 local Lib = loadstring(game:HttpGet('https://raw.githubusercontent.com/hoangsalty/roblox/main/scripts/Materials/UISource/Vision_Lib.lua'))()
-Window = Lib:Create({
+local Window = Lib:Create({
 	Name = "World//Zero",
 	Footer = "By Jank",
 	ToggleKey = Enum.KeyCode.RightControl,
-	LoadedCallback = function()
+	ToggledRelativeYOffset = 0,
+    LoadedCallback = function()
 		Window:TaskBarOnly(true)
 	end,
-	KeySystem = false,
-	Key = "123456",
-	MaxAttempts = 5,
-	DiscordLink = nil,
-	ToggledRelativeYOffset = 0
 })
 
 if game.PlaceId == 2727067538 then
