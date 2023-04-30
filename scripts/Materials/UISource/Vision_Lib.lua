@@ -2733,7 +2733,7 @@ function Library:Create(options)
 
 				local Dropdown = {
 					Items = options.Items,
-					SelectedItem = nil,
+					SelectedItem = options.Default or nil,
 					ContainerOpened = false,
 					NameText = options.Name,
 					Hover = false,
