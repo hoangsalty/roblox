@@ -38,6 +38,53 @@ local DefaultSettings = {
     ['SellEgg'] = true,
     ['AutoEquip'] = false,
     ['AutoSell'] = false,
+    ['Perks'] = {
+        BonusHP = {["name"] = "HP UP",
+            ["min"] = 5,
+            ["max"] = 12,
+            ["current"] = 5
+        },
+        DodgeChance = {["name"] = "Untouchable",
+            ["min"] = 5,
+            ["max"] = 20,
+            ["current"] = 5
+        },
+        DamageReduction = {["name"] = "Damage Reduction",
+            ["min"] = 2,
+            ["max"] = 8,
+            ["current"] = 2
+        },
+        BonusAttack = {["name"] = "Attack UP",
+            ["min"] = 2,
+            ["max"] = 8,
+            ["current"] = 2
+        },
+        CritStack = {["name"] = "Crit Stack",
+            ["min"] = 5,
+            ["max"] = 15,
+            ["current"] = 5
+        },
+        LifeDrain = {["name"] = "Life Drain",
+            ["min"] = 2,
+            ["max"] = 6,
+            ["current"] = 2
+        },
+        TestTier5 = {["name"] = "Boss of the Boss",
+            ["min"] = 10,
+            ["max"] = 30,
+            ["current"] = 10
+        },
+        MobBoss = {["name"] = "Mob Boss",
+            ["min"] = 10,
+            ["max"] = 30,
+            ["current"] = 10
+        },
+        Glass = {["name"] = "Glass",
+            ["min"] = 30,
+            ["max"] = 100,
+            ["current"] = 30
+        },
+    }
 }
 if not pcall(function() readfile(FileName) end) then writefile(FileName, game:GetService('HttpService'):JSONEncode(DefaultSettings)) end
 local Settings = game:GetService('HttpService'):JSONDecode(readfile(FileName))
@@ -89,19 +136,8 @@ local Client_Class = Client_Profile:WaitForChild('Class') and Client_Profile.Cla
 local InDungeon = require(game.ReplicatedStorage.Shared.Missions):IsMissionPlace()
 local CurrentWorld = require(game.ReplicatedStorage.Shared.Teleport):GetCurrentWorldData().WorldOrderID
 
-local Focus_Perks = {
-    BonusHP = {"HP UP", 12}, 
-    BonusAttack = {"Attack UP", 8}, 
-    DodgeChance = {"Untouchable", 19}, 
-    DamageReduction = {"Damage Reduction", 8},
-    CritStack = {"Crit Stack", 14}, 
-    LifeDrain = {"Life Drain", 6}, 
-    TestTier5 = {"Boss of the Boss", 29},
-    MobBoss = {"Mob Boss", 29}, 
-    Glass = {"Glass", 99},
-}
-
 local AtkType = {['Primary']= {},['Skill1']= {},['Skill2']= {},['Skill3']= {},['Ultimate']= {},}
+local ET_Delay = 0.05
 local KA_Delay = {
     ['Mage']        = {0.35, 5, 8, 0, 0},
     ['Swordmaster'] = {0.4, 5, 8, 0, 0},
@@ -111,20 +147,18 @@ local KA_Delay = {
     ['DualWielder'] = {0.5, 0, 6, 8, 30},
     ['Guardian']    = {0.75, 0, 6, 8, 30},
 
-    ['MageOfLight'] = {0.35, 0, 0, 0, 0},
+    ['MageOfLight'] = {0.1, 0, 0, 0, 0},
     ['Berserker']   = {0.35, 5, 5, 5, 20},
     ['Paladin']     = {0.3, 2, 0, 11, 0},
 
-    ['Demon']       = {1, 0, 5, 9, 0},
-    ['Dragoon']     = {0.35, 6, 6, 8, 30},
-    ['Archer']      = {0.45, 5, 10, 10, 25},
+    ['Demon']       = {2, 0, 5, 9, 25},
+    ['Dragoon']     = {0.4, 6, 6, 8, 15},
+    ['Archer']      = {0.3, 5, 10, 10, 20},
 
-    ['Summoner']    = {0.75, 0, 0, 5, 0},
-    ['Warlord']     = {0.35, 5, 3, 5, 5},
-    ['Assassin']     = {0.2, 0, 2, 4, 20},
+    --[[ ['Summoner']    = {1, 0, 0, 10, 0}, ]]
+    ['Warlord']     = {0.3, 5, 3, 5, 15},
+    ['Assassin']    = {0.2, 0, 2, 4, 15},
 }
-
-
 
 function IsAlive(target)
     return target:FindFirstChild('HealthProperties') and target.HealthProperties:FindFirstChild('Health') and target.HealthProperties.Health.Value > 0
@@ -280,9 +314,6 @@ function Refill(class)
             table.insert(AtkType['Skill3'], 'LightThrust'..i)
         end
     elseif class == 'Demon' then
-        for i=1,25 do
-            table.insert(AtkType['Primary'], 'Demon'..i)
-        end
         for i=1,9 do
             table.insert(AtkType['Primary'], 'DemonDPS'..i)
         end
@@ -292,8 +323,11 @@ function Refill(class)
             table.insert(AtkType['Skill2'], 'ScytheThrowDPS'..i)
         end
     
-        table.insert(AtkType['Skill3'], 'DemonLifeStealAOE')
         table.insert(AtkType['Skill3'], 'DemonLifeStealDPS')
+
+        for i=1,3 do
+            table.insert(AtkType['Ultimate'], 'DemonSoulDPS'..i)
+        end
     elseif class == 'Dragoon' then
         for i=1,6 do
             table.insert(AtkType['Primary'], 'Dragoon'..i)
@@ -331,13 +365,13 @@ function Refill(class)
             table.insert(AtkType['Ultimate'], 'HeavenlySword'..i)
         end
     elseif class == 'Summoner' then
-        for i=1,4 do
+        --[[ for i=1,4 do
             table.insert(AtkType['Primary'], 'Summoner'..i)
         end
 
         for i=1,5 do
             table.insert(AtkType['Skill3'], 'SoulHarvest'..i)
-        end
+        end ]]
     elseif class == 'Warlord' then
         for i=1,4 do
             table.insert(AtkType['Primary'], 'Warlord'..i)
@@ -807,10 +841,6 @@ local AF_Section3 = AutoFarm:Section({Name = "Action"}) do
 
                                 local mob_name = require(game.ReplicatedStorage.Shared.Mobs.Mobs[mob.Name])['NameTag']
                                 AFDebug:SetName('Attacking: '..tostring(mob_name))
-
-                                if Client_Class == 'Summoner' and Character.Properties.SummonCount.Value >= 4 then
-                                    game.ReplicatedStorage.Shared.Combat.Skillsets.Summoner.Summon:FireServer()
-                                end
                                 
                                 if require(game.ReplicatedStorage.Shared.Health):GetHealth(Character) < (require(game.ReplicatedStorage.Shared.Health):GetMaxHealth(Character)/2.5) then
                                     AFDebug:SetName('Healing...')
@@ -878,12 +908,7 @@ local AF_Section3 = AutoFarm:Section({Name = "Action"}) do
                                             local BossCurrentAttack = boss:FindFirstChild('MobProperties') and tostring(boss.MobProperties.CurrentAttack.Value)
                                             if table.find(OneShotSkills, BossCurrentAttack) then
                                                 TweenTP(boss.Collider, 50)
-                                            else
-                                                if Client_Class == 'Summoner' and Character.Properties.SummonCount.Value >= 4 then
-                                                    game.ReplicatedStorage.Shared.Combat.Skillsets.Summoner.Ultimate:FireServer()
-                                                    game.ReplicatedStorage.Shared.Combat.Skillsets.Summoner.Summon:FireServer()
-                                                end
-                                                
+                                            else                                                
                                                 if require(game.ReplicatedStorage.Shared.Health):GetHealth(Character) < (require(game.ReplicatedStorage.Shared.Health):GetMaxHealth(Character)/2.5) then
                                                     AFDebug:SetName('Healing...')
                                                     TweenTP(boss.Collider, 100)
@@ -1366,7 +1391,7 @@ local F_MainSection = Features:Section({Name = "Core"}) do
             end
             
             function Get_MobPos()
-                local closest, closestDistance = nil, 50
+                local closest, closestDistance = nil, 30
                 
                 for i,v in next, workspace.Mobs:GetChildren() do
                     if v:IsA('Model') and not v:FindFirstChild('NoHealthbar') and v:FindFirstChild('Collider') then
@@ -1376,6 +1401,19 @@ local F_MainSection = Features:Section({Name = "Core"}) do
                             if currentDistance < closestDistance then
                                 closest = v.Collider.Position
                                 closestDistance = currentDistance
+                            end
+                        end
+                    end
+                end
+                if workspace:FindFirstChild('TargetDummies') then
+                    for i,v in next, workspace.TargetDummies:GetChildren() do
+                        if v:IsA('Model') and not v:FindFirstChild('NoHealthbar') and v:FindFirstChild('Part') then
+                            if IsAlive(v) then
+                                local currentDistance = (Client_Root.Position - v.Part.Position).magnitude
+                                if currentDistance < closestDistance then
+                                    closest = v.Part.Position
+                                    closestDistance = currentDistance
+                                end
                             end
                         end
                     end
@@ -1400,7 +1438,7 @@ local F_MainSection = Features:Section({Name = "Core"}) do
                 if pos and not require(game.ReplicatedStorage.Client.Actions):IsMounted() then                        
                     for index,attack in next, AtkType[skilltype] do
                         game.ReplicatedStorage.Shared.Combat.Attack:FireServer(attack, Client_Root.Position, (pos - Client_Root.Position).Unit)
-                        task.wait(0.05)
+                        task.wait(ET_Delay)
             
                         if attack == AtkType[skilltype][#AtkType[skilltype]] then break end
                     end
@@ -1455,7 +1493,6 @@ local F_MainSection = Features:Section({Name = "Core"}) do
             task.defer(function()
                 while Settings['KillAura'] and task.wait(1) do
                     if not require(game.ReplicatedStorage.Client.Actions):IsMounted() then
-                        --if Character:WaitForChild('HealthProperties').Health.Value < Character:WaitForChild('HealthProperties').MaxHealth.Value then
                         if DamagePos() then
                             if Client_Class == 'Demon' then
                                 game.ReplicatedStorage.Shared.Combat.Skillsets.Demon.LifeSteal:FireServer(workspace.Mobs:GetChildren())
@@ -1463,9 +1500,15 @@ local F_MainSection = Features:Section({Name = "Core"}) do
                                 game.ReplicatedStorage.Shared.Combat.Skillsets.Paladin.GuildedLight:FireServer()
                             elseif Client_Class == 'Assassin' then
                                 game.ReplicatedStorage.Shared.Combat.Skillsets.Assassin.EventStealthWalk:FireServer(true)
+                            elseif Client_Class == 'Summoner' then
+                                if Character.Properties.SummonCount.Value >= 3 then
+                                    game.ReplicatedStorage.Shared.Combat.Skillsets.Summoner.Ultimate:FireServer()
+                                    game.ReplicatedStorage.Shared.Combat.Skillsets.Summoner.Summon:FireServer()
+                                    task.wait(5)
+                                    game.ReplicatedStorage.Shared.Combat.Skillsets.Summoner.ExplodeSummons:FireServer()
+                                end
                             end
                         end
-                        --end
                     end
                 end
             end)
@@ -1550,8 +1593,18 @@ local I_Section1 = Inventory:Section({Name = "Sell Selection"}) do
             Save()
     end})
 end
-local I_Section2 = Inventory:Section({Name = "Sell Trigger"}) do
-    I_Section2:Button({Name = "Quick Sell",
+local I_Section2 = Inventory:Section({Name = "Good Perks' Range"}) do
+    for i,v in next, Settings['Perks'] do
+        I_Section2:Slider({Name = v['name'],
+            Max = v['max'], Min = v['min'], Default = v['current'],
+            Callback = function(value)
+                Settings['Perks'][i]['current'] = value
+                Save()
+        end})
+    end
+end
+local I_Section3 = Inventory:Section({Name = "Sell Trigger"}) do
+    I_Section3:Button({Name = "Quick Sell",
         Callback = function()
             local sellTable = {}
             for i,v in next, Client_Profile.Inventory.Items:GetChildren() do
@@ -1576,14 +1629,14 @@ local I_Section2 = Inventory:Section({Name = "Sell Trigger"}) do
             game.ReplicatedStorage.Shared.Drops.SellItems:InvokeServer(sellTable)
     end})
 
-    I_Section2:Toggle({Name = "Auto Equip",
+    I_Section3:Toggle({Name = "Auto Equip",
         Default = Settings['AutoEquip'],
         Callback = function(state) 
             Settings['AutoEquip'] = state
             Save()
     end})
 
-    I_Section2:Toggle({Name = "Auto Sell",
+    I_Section3:Toggle({Name = "Auto Sell",
         Default = Settings['AutoSell'],
         Callback = function(state) 
             Settings['AutoSell'] = state
@@ -1637,26 +1690,13 @@ local I_Section2 = Inventory:Section({Name = "Sell Trigger"}) do
                 elseif Settings['SellTier4'] and rarity == 4 then
                     game.ReplicatedStorage.Shared.Drops.SellItems:InvokeServer({item})
                 elseif Settings['SellTier5'] and rarity == 5 then
-                    local perk1 = item.Perk1.Value
-                    local perk2 = item.Perk2.Value
-                    local perk3 = item.Perk3.Value
                     local perkFound = 0
 
-                    if (Focus_Perks[perk1]) then
-                        if (math.round(item.Perk1.PerkValue.Value*100) >= Focus_Perks[perk1][2]) then
-                            perkFound += 1
-                        end
-                    end
-            
-                    if (Focus_Perks[perk2]) then
-                        if (math.round(item.Perk2.PerkValue.Value*100) >= Focus_Perks[perk2][2]) then
-                            perkFound += 1
-                        end
-                    end
-            
-                    if (Focus_Perks[perk3]) then
-                        if (math.round(item.Perk3.PerkValue.Value*100) >= Focus_Perks[perk3][2]) then
-                            perkFound += 1
+                    for i=1,3 do
+                        if (Settings['Perks'][item['Perk'..i].Value]) then
+                            if (math.round(item['Perk'..i].PerkValue.Value*100) >= Settings['Perks'][item['Perk'..i].Value]['current']) then
+                                perkFound += 1
+                            end
                         end
                     end
 
@@ -1731,14 +1771,23 @@ local M_Section2 = Misc:Section({Name = "Selection"}) do
         end
     })
 
-    --[[M_Section2:CreateDropdown({Name = "Eggs Selection";
-        Options = {'StarEgg','JungleEgg','CrystalEgg','DesertEgg','ChristmasEgg','MoltenEgg','OceanEgg','SkyEgg','CatEgg','CatEggHalloween'};
-        ItemSelecting = true;
-        DefaultItemSelected = tostring(Mission_Name(Settings['DungeonID']));
+    local function EggList()
+        local Eggs = {}
+        for i,v in next, require(game.ReplicatedStorage.Shared.Items) do
+            if v['Type'] == 'Egg' then
+                table.insert(Eggs, {v.DisplayKey, v.Name})
+            end
+        end
+
+        return Eggs
+    end
+    M_Section2:Dropdown({Name = "Eggs Selection",
+        Items = EggList(),
+        Default = EggList()[1],
         Callback = function(item)
             require(game.ReplicatedStorage.Client.Gui.GuiScripts.PetShop):Open(item)
-        end;
-    })]]
+        end
+    })
 end
 local M_Section3 = Misc:Section({Name = "Extra"}) do
     M_Section3:Toggle({Name = "Feed Pet",
@@ -1759,7 +1808,7 @@ local M_Section3 = Misc:Section({Name = "Extra"}) do
         Callback = function()
             for i=1,40 do
                 game.ReplicatedStorage.Shared.Battlepass.RedeemItem:FireServer(i)
-                game.ReplicatedStorage.Shared.Battlepass.RedeemItem:FireServer(i, true)
+                --game.ReplicatedStorage.Shared.Battlepass.RedeemItem:FireServer(i, true)
                 task.wait(0.1)
             end
         end
