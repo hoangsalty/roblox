@@ -2733,7 +2733,7 @@ function Library:Create(options)
 
 				local Dropdown = {
 					Items = options.Items,
-					SelectedItem = options.Default or nil,
+					SelectedItem = nil,
 					ContainerOpened = false,
 					NameText = options.Name,
 					Hover = false,
@@ -3052,6 +3052,16 @@ function Library:Create(options)
 						)
 
 						if Dropdown.SelectedItem == nil then
+							if options.Default then
+								if type(options.Default) == 'table' then
+									DropdownOption.CallbackName = options.Default[1]
+									DropdownOption.CallbackVal = options.Default[2]
+								else
+									DropdownOption.CallbackName = options.Default
+									DropdownOption.CallbackVal = options.Default
+								end
+							end
+
 							Dropdown.SelectedItem = DropdownOption.CallbackVal
 							Dropdown["5b"].Text = tostring(DropdownOption.CallbackName)
 
